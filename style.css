@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+/* ---------- Thème provisoire, en attendant la maquette Figma (étape 2) ---------- */
+@theme {
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-display: 'Instrument Serif', Georgia, serif;
+
+    --color-papier: #f4f0e8;
+    --color-carton: #e8e2d6;
+    --color-encre: #1c1b19;
+    --color-gris: #6b665e;
+    --color-rouge: #d23c24;
+}

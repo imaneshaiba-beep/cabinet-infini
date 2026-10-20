@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cabinet infini</title>
+<meta name="description" content="Un mur infini d'affiches du Victoria and Albert Museum, qui glisse tout seul et se renouvelle en direct.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Instrument+Serif&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body class="h-dvh overflow-hidden bg-papier font-sans text-encre antialiased">
+
+<!-- Le mur : les tuiles y sont créées par affiches.js, puis recyclées quand elles sortent de l'écran -->
+<main id="mur" tabindex="0" class="relative h-full cursor-grab touch-none overflow-hidden outline-none select-none active:cursor-grabbing" aria-label="Mur d'affiches. Faites-le glisser à la souris, au doigt, à la molette ou avec les flèches du clavier."></main>
+
+<template id="modeleTuile">
+    <figure class="group absolute top-0 left-0 m-0 bg-carton p-2.5 will-change-transform sm:p-3">
+        <img alt="" draggable="false" class="size-full object-contain opacity-0 transition-opacity duration-700 motion-reduce:transition-none">
+        <figcaption class="pointer-events-none absolute inset-x-0 bottom-0 bg-encre/85 px-3 py-2 text-papier opacity-0 transition-opacity group-hover:opacity-100">
+            <p class="tuile__titre line-clamp-2 text-xs leading-snug font-medium"></p>
+            <p class="tuile__legende mt-0.5 line-clamp-1 text-[0.65rem] text-papier/70"></p>
+        </figcaption>
+    </figure>
+</template>
+
+<header class="pointer-events-none fixed top-0 left-0 z-10 p-4 sm:p-8">
+    <div class="bg-papier/90 px-4 py-3 shadow-sm backdrop-blur sm:px-6 sm:py-5">
+        <p class="text-[0.65rem] tracking-[0.2em] text-gris uppercase">Victoria and Albert Museum</p>
+        <h1 class="mt-1 font-display text-4xl leading-none sm:text-6xl">Cabinet infini</h1>
+        <p class="mt-2 text-xs text-gris sm:text-sm"><span id="compteur" class="text-encre tabular-nums">0</span> affiches accrochées sur <span id="total" class="tabular-nums">…</span></p>
+    </div>
+</header>
+
+<aside class="pointer-events-none fixed bottom-4 left-4 z-10 max-w-[calc(100vw-2rem)] bg-encre px-4 py-3 text-papier sm:bottom-8 sm:left-8 sm:max-w-sm">
+    <p class="flex items-center gap-2 text-[0.6rem] tracking-[0.2em] text-papier/60 uppercase">
+        <span class="size-1.5 animate-pulse rounded-full bg-rouge motion-reduce:animate-none"></span>Dernière arrivée
+    </p>
+    <p id="arrivee" class="mt-1 line-clamp-2 text-sm">…</p>
+</aside>
+
+<div id="etat" class="pointer-events-none fixed inset-0 z-20 flex flex-col items-center justify-center gap-3 text-sm text-gris" role="status">
+    <p id="etatTexte">Chargement…</p>
+    <button id="reessayer" type="button" class="pointer-events-auto rounded-full border border-encre bg-papier px-4 py-1.5 text-encre hover:bg-encre hover:text-papier" hidden>Réessayer</button>
+</div>
+
+<script type="module" src="/affiches.js"></script>
+</body>
+</html>

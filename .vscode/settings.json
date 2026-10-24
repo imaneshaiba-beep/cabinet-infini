@@ -1,0 +1,14 @@
+{
+    // L'explorateur de VS Code, rangé : les fichiers qui vont ensemble sont regroupés
+    // sous leur fichier principal (cliquer sur la flèche pour les voir).
+    "files.exclude": {
+        "**/.DS_Store": true
+    },
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.expand": false,
+    "explorer.fileNesting.patterns": {
+        "package.json": "package-lock.json, vite.config.js",
+        ".env": ".env.*, .deploy-manifest.json",
+        ".gitignore": ".gitattributes"
+    }
+}

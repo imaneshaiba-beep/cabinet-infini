@@ -3,8 +3,9 @@
 //    Le signe du cabinet, en Instrument Serif italique, suit la souris.
 //    Plus il va vite, plus il se sépare en rouge et bleu (la frange de
 //    la lentille), ondule (la typo liquide) et penche dans le sens du geste.
-//    Sur ce qu'on peut faire, il bascule lettre par lettre vers le geste :
-//    « Glisser », « Voir », « ↗ », « → ». En mélange « différence »,
+//    Sur les images, il bascule lettre par lettre vers le geste : « Glisser »,
+//    « Voir ». Sur un lien ou un bouton, il se réduit à un point : le mot
+//    survolé fait sa propre bascule, sans rien par-dessus. En mélange « différence »,
 //    il est noir sur le blanc et passe en négatif sur les affiches.
 //    Seulement avec une souris ; la flèche revient quand il s'en va.
 // ============================================================
@@ -19,8 +20,8 @@ const BLEU_INVERSE = 'rgb(225 148 0 / 0.9)';
 
 const ETATS = {
     repos: { texte: '∞', classe: 'text-[2.6rem]' },
-    lien: { texte: '→', classe: 'text-[1.9rem]' },
-    externe: { texte: '↗', classe: 'text-[1.9rem]' },
+    // Un simple point : un signe plus grand se poserait sur le mot du lien (« Man→feste »).
+    lien: { texte: '•', classe: 'text-[1.1rem]' },
     glisser: { texte: 'Glisser', classe: 'text-[1.35rem]' },
     voir: { texte: 'Voir', classe: 'text-[1.35rem]' },
 };
@@ -75,7 +76,6 @@ export function curseur() {
         if (!cible) changer('repos');
         else if (cible.id === 'carrousel') changer('glisser');
         else if (cible.matches('.carte-grille')) changer('voir');
-        else if (cible.target === '_blank') changer('externe');
         else changer('lien');
     };
 

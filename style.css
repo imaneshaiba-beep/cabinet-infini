@@ -10,4 +10,71 @@
     --color-encre: #1c1b19;
     --color-gris: #6b665e;
     --color-rouge: #d23c24;
+
+    --ease-verre: cubic-bezier(.2, .8, .2, 1);
+}
+
+/* ---------- Le verre liquide, version page (le carrousel a sa vraie lentille en WebGL) ----------
+   Un fond presque transparent qui floute ce qui passe dessous, un reflet blanc en haut,
+   et une frange rouge à gauche, bleue à droite : la même séparation des couleurs que la lentille. */
+@utility verre {
+    background: rgb(255 255 255 / 0.42);
+    backdrop-filter: blur(16px) saturate(1.8) brightness(1.04);
+    -webkit-backdrop-filter: blur(16px) saturate(1.8) brightness(1.04);
+    border: 1px solid rgb(255 255 255 / 0.7);
+    box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.95),
+        inset 0 -1px 1px rgb(0 0 0 / 0.04),
+        inset 2px 0 2px -1px rgb(255 50 110 / 0.28),
+        inset -2px 0 2px -1px rgb(40 130 255 / 0.32),
+        0 10px 30px -10px rgb(0 0 0 / 0.18),
+        0 1px 3px rgb(0 0 0 / 0.06);
+}
+
+/* Les petites étiquettes au-dessus des titres de section */
+@utility etiquette {
+    @apply verre inline-flex items-center gap-2 rounded-full px-3 py-1 text-[0.65rem] tracking-[0.2em] text-encre uppercase;
+}
+
+/* Les lignes des titres découpés par SplitText : ce qui dépasse est caché */
+.ligne-masque {
+    overflow: clip;
+    padding-bottom: 0.08em;
+}
+
+html {
+    scrollbar-gutter: stable;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+/* ---------- La bascule (bascule.js) ----------
+   Les mots sont empilés dans la même case de grille ; chaque lettre bascule en 3D. */
+.bascule {
+    display: inline-grid;
+    perspective: 800px;
+    vertical-align: bottom;
+    overflow: clip;
+    padding: 0.1em 0.06em;
+    margin: -0.1em -0.06em;
+}
+.bascule__couche {
+    grid-area: 1 / 1;
+    white-space: pre;
+}
+.bascule__lettre {
+    display: inline-block;
+    backface-visibility: hidden;
+}
+
+/* ---------- La typo liquide (l'écran de chargement) ----------
+   Le filtre SVG #typo-liquide fait onduler les lettres ; la frange rouge et bleue
+   (la même que la lentille du carrousel) reste fine au repos et grossit pendant la bascule. */
+.typo-liquide {
+    filter: url(#typo-liquide);
+    text-shadow: -0.03em 0 0 rgb(255 45 85 / 0.4), 0.03em 0 0 rgb(30 107 255 / 0.45);
 }

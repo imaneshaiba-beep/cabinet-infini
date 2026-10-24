@@ -4,47 +4,156 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cabinet infini</title>
-<meta name="description" content="Un mur infini d'affiches du Victoria and Albert Museum, qui glisse tout seul et se renouvelle en direct.">
+<meta name="description" content="Un cabinet d'affiches sans fond : des milliers d'affiches choisies par des graphistes, vues à travers une lentille de verre liquide.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Instrument+Serif&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#ffffff">
 <link rel="stylesheet" href="/style.css">
 </head>
-<body class="h-dvh overflow-hidden bg-papier font-sans text-encre antialiased">
+<body class="bg-white font-sans text-encre antialiased">
 
-<!-- Le mur : les tuiles y sont créées par affiches.js, puis recyclées quand elles sortent de l'écran -->
-<main id="mur" tabindex="0" class="relative h-full cursor-grab touch-none overflow-hidden outline-none select-none active:cursor-grabbing" aria-label="Mur d'affiches. Faites-le glisser à la souris, au doigt, à la molette ou avec les flèches du clavier."></main>
+<!-- La typo liquide : un bruit qui ondule déforme les lettres, comme vues à travers du verre ou de l'eau -->
+<svg class="absolute size-0" aria-hidden="true">
+    <filter id="typo-liquide" x="-10%" y="-40%" width="120%" height="180%" color-interpolation-filters="sRGB">
+        <feTurbulence id="typoBruit" type="fractalNoise" baseFrequency="0.011 0.022" numOctaves="2" seed="3" result="bruit"/>
+        <feDisplacementMap id="typoDeformation" in="SourceGraphic" in2="bruit" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+</svg>
 
-<template id="modeleTuile">
-    <figure class="group absolute top-0 left-0 m-0 bg-carton p-2.5 will-change-transform sm:p-3">
-        <img alt="" draggable="false" class="size-full object-contain opacity-0 transition-opacity duration-700 motion-reduce:transition-none">
-        <figcaption class="pointer-events-none absolute inset-x-0 bottom-0 bg-encre/85 px-3 py-2 text-papier opacity-0 transition-opacity group-hover:opacity-100">
-            <p class="tuile__titre line-clamp-2 text-xs leading-snug font-medium"></p>
-            <p class="tuile__legende mt-0.5 line-clamp-1 text-[0.65rem] text-papier/70"></p>
-        </figcaption>
-    </figure>
-</template>
-
-<header class="pointer-events-none fixed top-0 left-0 z-10 p-4 sm:p-8">
-    <div class="bg-papier/90 px-4 py-3 shadow-sm backdrop-blur sm:px-6 sm:py-5">
-        <p class="text-[0.65rem] tracking-[0.2em] text-gris uppercase">Victoria and Albert Museum</p>
-        <h1 class="mt-1 font-display text-4xl leading-none sm:text-6xl">Cabinet infini</h1>
-        <p class="mt-2 text-xs text-gris sm:text-sm"><span id="compteur" class="text-encre tabular-nums">0</span> affiches accrochées sur <span id="total" class="tabular-nums">…</span></p>
+<!-- L'écran de chargement : sur fond blanc, les mots basculent lettre par lettre à travers la typo liquide -->
+<div id="chargeur" class="fixed inset-0 z-[60] grid place-items-center bg-white" role="status">
+    <div id="chargeurContenu" class="flex flex-col items-center opacity-0">
+        <p id="chargeurTypo" class="typo-liquide font-display text-[clamp(2.75rem,6.5vw,5rem)] leading-none tracking-[-0.015em]">
+            <span id="chargeurMot">Cabinet infini</span>
+        </p>
+        <p class="mt-7 flex items-center gap-3 text-[0.62rem] tracking-[0.2em] text-gris uppercase">
+            <span id="chargeurPourcent" class="flex font-medium text-encre tabular-nums"><span>0</span><span>0</span><span>0</span></span>
+            <span class="h-px w-6 bg-encre/25"></span>
+            <span id="chargeurEtape">Connexion à Are.na</span>
+        </p>
+        <button id="reessayer" type="button" class="verre mt-6 rounded-full px-5 py-2 text-sm" hidden>Réessayer</button>
     </div>
-</header>
-
-<aside class="pointer-events-none fixed bottom-4 left-4 z-10 max-w-[calc(100vw-2rem)] bg-encre px-4 py-3 text-papier sm:bottom-8 sm:left-8 sm:max-w-sm">
-    <p class="flex items-center gap-2 text-[0.6rem] tracking-[0.2em] text-papier/60 uppercase">
-        <span class="size-1.5 animate-pulse rounded-full bg-rouge motion-reduce:animate-none"></span>Dernière arrivée
-    </p>
-    <p id="arrivee" class="mt-1 line-clamp-2 text-sm">…</p>
-</aside>
-
-<div id="etat" class="pointer-events-none fixed inset-0 z-20 flex flex-col items-center justify-center gap-3 text-sm text-gris" role="status">
-    <p id="etatTexte">Chargement…</p>
-    <button id="reessayer" type="button" class="pointer-events-auto rounded-full border border-encre bg-papier px-4 py-1.5 text-encre hover:bg-encre hover:text-papier" hidden>Réessayer</button>
 </div>
 
-<script type="module" src="/affiches.js"></script>
+<!-- La navigation, en verre, toujours en haut -->
+<nav id="nav" class="verre fixed top-4 left-1/2 z-40 flex -translate-x-1/2 items-center gap-1 rounded-full py-1.5 pr-1.5 pl-4 text-sm" aria-label="Sections">
+    <a href="#accueil" class="mr-2 font-display text-xl leading-none whitespace-nowrap">Cabinet infini</a>
+    <span id="indicateur" class="absolute top-0 left-0 rounded-full bg-encre opacity-0" aria-hidden="true"></span>
+    <a href="#manifeste" class="lien-nav relative hidden rounded-full px-3 py-1.5 transition-colors duration-300 sm:block">Manifeste</a>
+    <a href="#selection" class="lien-nav relative hidden rounded-full px-3 py-1.5 transition-colors duration-300 sm:block">Sélection</a>
+    <a href="#collection" class="lien-nav relative rounded-full px-3 py-1.5 transition-colors duration-300">Collection</a>
+    <span id="progression" class="pointer-events-none absolute inset-x-6 -bottom-px h-px origin-left scale-x-0 bg-encre"></span>
+</nav>
+
+<main>
+    <!-- 1. Le carrousel en verre liquide -->
+    <section id="accueil" class="relative h-dvh overflow-hidden">
+        <h1 class="sr-only">Cabinet infini</h1>
+        <canvas id="carrousel" tabindex="0" class="block size-full cursor-grab touch-pan-y outline-none active:cursor-grabbing" aria-label="Carrousel d'affiches. Faites-le glisser à la souris, au doigt, avec deux doigts de côté sur un trackpad ou avec les flèches du clavier. Cliquez sur une affiche pour l'agrandir, Échap pour la refermer."></canvas>
+
+        <!-- Trois couches pour trois animations : #pied s'efface au défilement, #piedContenu pendant la mise au point, ses enfants à l'entrée -->
+        <div id="pied" class="pointer-events-none absolute inset-x-0 bottom-0">
+        <div id="piedContenu" class="flex items-center justify-between p-4 text-xs text-gris transition-opacity duration-500 sm:p-6">
+            <p class="flex items-center gap-2">
+                <span class="size-1.5 animate-pulse rounded-full bg-rouge motion-reduce:animate-none"></span>
+                <span><span id="compteur" class="text-encre tabular-nums">0</span> affiches accrochées</span>
+            </p>
+            <div id="accueilTexte" class="absolute inset-x-0 bottom-12 mx-auto max-w-[85vw] text-center sm:bottom-6 sm:max-w-md">
+                <p class="text-sm font-medium text-encre"><span id="titre">&nbsp;</span></p>
+                <p id="legende" class="text-xs">&nbsp;</p>
+            </div>
+            <p id="indice" class="flex items-center gap-2">Défiler <span aria-hidden="true">↓</span></p>
+        </div>
+        </div>
+
+        <!-- La mise au point : sous l'affiche agrandie, le lien vers sa page et de quoi fermer -->
+        <div id="detail" inert class="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center gap-6 p-4 text-sm opacity-0 transition-opacity duration-500 sm:p-6 [&.ouvert]:pointer-events-auto [&.ouvert]:opacity-100 [&.ouvert]:delay-300">
+            <a id="detailLien" target="_blank" rel="noopener" class="underline underline-offset-4">Voir sur Are.na</a>
+            <button id="detailFermer" type="button" class="underline underline-offset-4">Fermer</button>
+        </div>
+
+    </section>
+
+    <!-- 2. Le manifeste : le texte s'allume mot à mot au défilement -->
+    <section id="manifeste" class="relative flex min-h-dvh flex-col justify-center gap-10 px-6 py-32 sm:px-12">
+        <p class="etiquette self-start">Manifeste</p>
+        <p id="manifesteTexte" class="max-w-6xl font-display text-[clamp(2.2rem,5.6vw,5.8rem)] leading-[1.02] tracking-[-0.01em]">
+            Un cabinet de curiosités <em>sans fond.</em> Des milliers d'affiches, choisies par des graphistes du monde entier, glissent, se renouvellent et ne s'arrêtent jamais. Attrapez-les, ouvrez-les, <em>perdez-vous dedans.</em>
+        </p>
+    </section>
+
+    <!-- 3. La sélection : la section reste en place et les affiches défilent de côté -->
+    <!-- bg-white : le titre inversé a besoin d'un vrai fond blanc derrière lui, même quand GSAP isole la section pendant l'épinglage -->
+    <section id="selection" class="relative h-dvh overflow-hidden bg-white">
+        <p class="etiquette absolute top-24 left-6 z-10 sm:top-28 sm:left-12">Sélection · <span id="selectionNombre">0</span></p>
+        <!-- mix-blend-difference sur le bloc lui-même : le titre blanc s'inverse, noir sur le fond blanc, en négatif sur les affiches -->
+        <div class="pointer-events-none absolute top-36 left-6 z-10 text-white mix-blend-difference sm:top-40 sm:left-12">
+            <h2 class="titre-section font-display text-[clamp(2.8rem,8vw,8rem)] leading-[0.95]">Le style suisse</h2>
+        </div>
+        <div id="piste" class="absolute inset-0 flex items-end gap-[4vw] pt-48 pr-[12vw] pb-[8vh] pl-[48vw] will-change-transform sm:items-center sm:pt-0 sm:pb-0"></div>
+    </section>
+
+    <!-- 4. Les chiffres, qui bougent avec les données -->
+    <section id="chiffres" class="grid gap-16 px-6 py-[18vh] sm:grid-cols-3 sm:gap-8 sm:px-12">
+        <div class="chiffre-bloc">
+            <p class="chiffre font-display text-[clamp(4.5rem,11vw,11rem)] leading-none tabular-nums" data-cle="total">0</p>
+            <span class="trait mt-6 block h-px origin-left bg-encre"></span>
+            <p class="mt-4 text-sm text-gris">affiches dans le cabinet</p>
+        </div>
+        <div class="chiffre-bloc">
+            <p class="chiffre font-display text-[clamp(4.5rem,11vw,11rem)] leading-none tabular-nums" data-cle="arrivees">0</p>
+            <span class="trait mt-6 block h-px origin-left bg-encre"></span>
+            <p class="mt-4 text-sm text-gris">déjà arrivées sur cette page, et ça monte pendant que vous lisez</p>
+        </div>
+        <div class="chiffre-bloc">
+            <p id="infini" class="font-display text-[clamp(4.5rem,11vw,11rem)] leading-none">∞</p>
+            <span class="trait mt-6 block h-px origin-left bg-encre"></span>
+            <p class="mt-4 text-sm text-gris">défilement, sans fin et sans pause</p>
+        </div>
+    </section>
+
+    <!-- 4 bis. Un jeu de typographie : le mot « affiche » dans d'autres langues, qui bascule lettre par lettre -->
+    <section id="langues" class="flex min-h-[85vh] flex-col items-center justify-center overflow-hidden px-6 py-32 text-center">
+        <p class="etiquette">Une affiche se dit</p>
+        <p id="langueMot" class="mt-10 text-[clamp(4rem,16vw,16rem)] leading-[0.9]">Affiche</p>
+        <p id="langueNom" class="mt-8 text-xs tracking-[0.2em] text-gris uppercase">en français</p>
+    </section>
+
+    <!-- 5. La collection : filtres par chaîne (animés avec Flip) et grille qui s'allonge -->
+    <section id="collection" class="px-6 pt-24 pb-32 sm:px-12">
+        <div class="flex flex-wrap items-end justify-between gap-8">
+            <div>
+                <p class="etiquette">Collection</p>
+                <h2 class="mt-4 min-h-[0.95em] font-display text-[clamp(2.4rem,8vw,8rem)] leading-[0.95]"><span id="collectionTitre">Toutes les chaînes</span></h2>
+            </div>
+            <div id="filtres" class="verre flex flex-wrap gap-1 rounded-full p-1.5 text-sm" role="group" aria-label="Filtrer par chaîne"></div>
+        </div>
+        <div id="grille" class="relative mt-14 grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4"></div>
+        <div class="mt-20 flex justify-center">
+            <button id="encore" type="button" class="verre rounded-full px-7 py-3.5 text-sm transition-transform hover:scale-105">Encore des affiches</button>
+        </div>
+    </section>
+</main>
+
+<!-- 6. La fin : un bandeau qui défile, plus vite quand on fait défiler la page -->
+<footer id="fin" class="overflow-hidden border-t border-black/10 pt-20 pb-10">
+    <div id="bandeau" class="flex w-max font-display text-[clamp(5rem,17vw,17rem)] leading-none whitespace-nowrap" aria-hidden="true">
+        <span class="pr-[0.25em]">Cabinet infini <em>—</em></span><span class="pr-[0.25em]">Cabinet infini <em>—</em></span>
+    </div>
+    <div class="mt-14 flex flex-wrap justify-between gap-4 px-6 text-xs text-gris sm:px-12">
+        <p>Images : chaînes publiques d'<a href="https://www.are.na" target="_blank" rel="noopener" class="underline underline-offset-2">Are.na</a>, choisies par leurs contributeurs.</p>
+        <p>Projet portfolio · 2026</p>
+    </div>
+</footer>
+
+<!-- Le curseur en verre (seulement avec une souris) -->
+<div id="curseur" class="pointer-events-none fixed top-0 left-0 z-50 hidden" aria-hidden="true">
+    <div id="bulle" class="verre size-12 rounded-full"></div>
+</div>
+
+<script type="module" src="/main.js"></script>
 </body>
 </html>

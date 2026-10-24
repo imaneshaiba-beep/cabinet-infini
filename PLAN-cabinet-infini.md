@@ -85,6 +85,18 @@ npm install tailwindcss @tailwindcss/vite
 
 ## 7. L'animation (GSAP)
 
+> **Le site complet (20 octobre).** Les affiches viennent maintenant d'**Are.na**, de quatre chaînes tenues par des graphistes (Style suisse, Typographie, Contemporain, Posters, soit 4 632 images), sans clé. La page se fait défiler :
+> 1. un carrousel en verre liquide (WebGL) avec trois rangées infinies en sens alternés ; un clic agrandit l'affiche pendant que la lentille se resserre autour d'elle ;
+> 2. le manifeste, épinglé, qui s'allume mot à mot (SplitText) ;
+> 3. la sélection « Le style suisse » qui défile de côté (pin + containerAnimation), avec un titre inversé ;
+> 4. les chiffres qui comptent et suivent les données en direct ;
+> 5. la collection, avec des filtres animés par **Flip** et un bouton « Encore des affiches » ;
+> 6. un bandeau de fin qui accélère et se retourne selon la vitesse du défilement.
+>
+> On y trouve aussi une navigation en verre avec une pastille qui suit la section, et un curseur en verre qui s'étire comme une goutte. Avec « réduire les animations », tout reste lisible, sans mouvement.
+>
+> Les fichiers : `main.js` (le départ), `donnees.js`, `carrousel.js`, `lentille.js`, `sections.js`, `animations.js`.
+
 - [ ] Les nouvelles cartes arrivent en cascade (`stagger`), comme `cascade()` dans `pays.js`.
 - [ ] Le survol avec `overwrite: "auto"`.
 - [ ] `gsap.matchMedia()` pour respecter « réduire les animations ».

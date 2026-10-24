@@ -3,3 +3,7 @@ dist
 .DS_Store
 .env
 ~$*
+.env.*
+!.env.example
+.deploy-manifest.json
+deployer.env

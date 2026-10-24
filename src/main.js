@@ -6,7 +6,7 @@
 // ============================================================
 
 import { gsap } from 'gsap';
-import { charger, quandArrivent, affiches } from './donnees.js';
+import { charger, quandArrivent } from './donnees.js';
 import { demarrerCarrousel, lancerEntree, reglerSortie, descenteMax } from './carrousel.js';
 import { remplirSelection, ajouterCartes, preparerFiltres } from './sections.js';
 import { animer, reveler, revelerTout, majChiffres, rafraichir } from './animations.js';
@@ -17,9 +17,7 @@ const MOTS_CHARGEMENT = ['Cabinet', 'infini', 'Affiches', 'Typographie', 'Style 
 const DUREE_MINIMUM = 3200; // ms : le temps de voir au moins quelques mots basculer
 const MOT_TOUTES_LES = 1100; // ms : un mot a le temps de se poser avant le suivant
 
-const entier = new Intl.NumberFormat('fr-FR');
 const reduire = matchMedia('(prefers-reduced-motion: reduce)');
-const compteur = document.getElementById('compteur');
 const chargeur = document.getElementById('chargeur');
 const chargeurEtape = document.getElementById('chargeurEtape');
 const reessayer = document.getElementById('reessayer');
@@ -38,11 +36,8 @@ history.scrollRestoration = 'manual';
 scrollTo(0, 0);
 document.documentElement.classList.add('overflow-hidden');
 
-// Chaque nouvelle page d'affiches fait monter les compteurs.
-quandArrivent(() => {
-    compteur.textContent = entier.format(affiches.length);
-    majChiffres();
-});
+// Chaque nouvelle page d'affiches fait monter les chiffres.
+quandArrivent(majChiffres);
 
 navigationTypo();
 const typo = preparerTypo();

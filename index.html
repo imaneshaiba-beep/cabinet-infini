@@ -67,15 +67,11 @@
         <!-- Trois couches pour trois animations : #pied s'efface au défilement, #piedContenu pendant la mise au point, ses enfants à l'entrée -->
         <div id="pied" class="pointer-events-none absolute inset-x-0 bottom-0">
         <div id="piedContenu" class="flex items-center justify-between p-4 text-xs text-gris transition-opacity duration-500 sm:p-6">
-            <p class="flex items-center gap-2">
-                <span class="size-1.5 animate-pulse rounded-full bg-rouge motion-reduce:animate-none"></span>
-                <span><span id="compteur" class="text-encre tabular-nums">0</span> affiches accrochées</span>
-            </p>
             <div id="accueilTexte" class="absolute inset-x-0 bottom-12 mx-auto max-w-[85vw] text-center sm:bottom-6 sm:max-w-md">
                 <p class="text-sm font-medium text-encre"><span id="titre">&nbsp;</span></p>
                 <p id="legende" class="text-xs">&nbsp;</p>
             </div>
-            <p id="indice" class="flex items-center gap-2">Défiler <span aria-hidden="true">↓</span></p>
+            <p id="indice" class="ml-auto flex items-center gap-2">Défiler <span aria-hidden="true">↓</span></p>
         </div>
         </div>
 

@@ -14,9 +14,18 @@
 import { Client } from 'basic-ftp';
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join, posix, relative, sep } from 'node:path';
+import { rootCertificates } from 'node:tls';
 
 const racine = new URL('..', import.meta.url).pathname;
 const MANIFESTE = join(racine, '.deploy-manifest.json');
+// Le serveur d'o2switch n'envoie que son propre certificat, sans les intermédiaires de Let's Encrypt
+// qui le relient à une autorité connue de Node : YR1, puis Root YR contresignée par ISRG Root X1.
+// On les fournit nous-mêmes, en plus des autorités habituelles : la connexion reste entièrement vérifiée.
+// (Récupérés aux adresses indiquées dans les certificats : http://yr1.i.lencr.org/ et http://yr.i.lencr.org/.)
+const AUTORITES = [
+    ...rootCertificates,
+    ...['lets-encrypt-yr1.pem', 'isrg-root-yr-par-x1.pem'].map(f => readFileSync(join(racine, 'scripts/certificats', f), 'utf8')),
+];
 
 const manquantes = ['FTP_HOST', 'FTP_USER', 'FTP_PASSWORD', 'REMOTE_DIR'].filter(cle => !process.env[cle]);
 if (manquantes.length) {
@@ -50,6 +59,7 @@ try {
         user: process.env.FTP_USER,
         password: process.env.FTP_PASSWORD,
         secure: process.env.FTP_SECURE !== 'false',
+        secureOptions: { ca: AUTORITES },
     });
     console.log(`Connecté à ${process.env.FTP_HOST}, envoi de ${fichiers.length} fichiers vers ${distant}/`);
 

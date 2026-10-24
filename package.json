@@ -6,10 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "reserve": "node scripts/reserve.mjs",
+    "deployer": "vite build && node --env-file=.env scripts/deployer.mjs"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
+    "basic-ftp": "^5.3.1",
     "tailwindcss": "^4.3.3",
     "vite": "^8.3.4"
   },

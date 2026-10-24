@@ -1,0 +1,146 @@
+@import "tailwindcss";
+
+/* ---------- Les polices, hébergées dans le site (public/fonts) ----------
+   Plus de Google Fonts : aucune requête ne part chez Google, donc l'adresse IP
+   des visiteurs ne lui est pas transmise (RGPD). Deux découpages par police,
+   comme chez Google : « latin » (français, anglais…) et « latin-ext » (tchèque,
+   polonais…). Le navigateur ne télécharge que celui dont la page a besoin.
+   Licence : SIL Open Font License, voir public/fonts/LICENSE-*.txt. */
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 100 900; /* une police variable : 400 et 500 dans le même fichier */
+    font-display: swap;
+    src: url('/fonts/inter-latin-wght-normal.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('/fonts/inter-latin-ext-wght-normal.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+    font-family: 'Instrument Serif';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/fonts/instrument-serif-latin-400-normal.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Instrument Serif';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/fonts/instrument-serif-latin-ext-400-normal.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+    font-family: 'Instrument Serif';
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/fonts/instrument-serif-latin-400-italic.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Instrument Serif';
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/fonts/instrument-serif-latin-ext-400-italic.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ---------- Thème provisoire, en attendant la maquette Figma (étape 2) ---------- */
+@theme {
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-display: 'Instrument Serif', Georgia, serif;
+
+    --color-papier: #f4f0e8;
+    --color-carton: #e8e2d6;
+    --color-encre: #1c1b19;
+    --color-gris: #6b665e;
+    --color-rouge: #d23c24;
+
+    --ease-verre: cubic-bezier(.2, .8, .2, 1);
+}
+
+/* ---------- Le verre liquide, version page (le carrousel a sa vraie lentille en WebGL) ----------
+   Un fond presque transparent qui floute ce qui passe dessous, un reflet blanc en haut,
+   et une frange rouge à gauche, bleue à droite : la même séparation des couleurs que la lentille. */
+@utility verre {
+    background: rgb(255 255 255 / 0.42);
+    backdrop-filter: blur(16px) saturate(1.8) brightness(1.04);
+    -webkit-backdrop-filter: blur(16px) saturate(1.8) brightness(1.04);
+    border: 1px solid rgb(255 255 255 / 0.7);
+    box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.95),
+        inset 0 -1px 1px rgb(0 0 0 / 0.04),
+        inset 2px 0 2px -1px rgb(255 50 110 / 0.28),
+        inset -2px 0 2px -1px rgb(40 130 255 / 0.32),
+        0 10px 30px -10px rgb(0 0 0 / 0.18),
+        0 1px 3px rgb(0 0 0 / 0.06);
+}
+
+/* Les petites étiquettes au-dessus des titres de section */
+@utility etiquette {
+    @apply verre inline-flex items-center gap-2 rounded-full px-3 py-1 text-[0.65rem] tracking-[0.2em] text-encre uppercase;
+}
+
+/* Le curseur dessiné (curseur.js) remplace la flèche, partout, tant qu'il est là.
+   !important : le carrousel a ses propres curseurs (cursor-grab). */
+.sans-fleche,
+.sans-fleche * {
+    cursor: none !important;
+}
+
+/* Les lignes des titres découpés par SplitText : ce qui dépasse est caché */
+.ligne-masque {
+    overflow: clip;
+    padding-bottom: 0.08em;
+}
+
+html {
+    scrollbar-gutter: stable;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+/* ---------- La bascule (bascule.js) ----------
+   Les mots sont empilés dans la même case de grille ; chaque lettre bascule en 3D.
+   Dans le niveau « components » : les classes Tailwind (mt-20…) passent par-dessus.
+   Hors niveau, ces marges négatives écrasaient toutes les marges posées dans le HTML. */
+@layer components {
+    .bascule {
+        display: inline-grid;
+        perspective: 800px;
+        vertical-align: bottom;
+        overflow: clip;
+        padding: 0.1em 0.06em;
+        margin: -0.1em -0.06em;
+    }
+    .bascule__couche {
+        grid-area: 1 / 1;
+        white-space: pre;
+    }
+    .bascule__lettre {
+        display: inline-block;
+        backface-visibility: hidden;
+    }
+}
+
+/* ---------- La typo liquide (l'écran de chargement) ----------
+   Le filtre SVG #typo-liquide fait onduler les lettres ; la frange rouge et bleue
+   (la même que la lentille du carrousel) reste fine au repos et grossit pendant la bascule. */
+.typo-liquide {
+    filter: url(#typo-liquide);
+    text-shadow: -0.03em 0 0 rgb(255 45 85 / 0.4), 0.03em 0 0 rgb(30 107 255 / 0.45);
+}

@@ -8,6 +8,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 import { stats } from './donnees.js';
+import { curseur } from './curseur.js';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -62,61 +63,6 @@ export function revelerTout() {
     enAttente.clear();
     gsap.killTweensOf('.carte-grille');
     gsap.set('.carte-grille', { opacity: 1, y: 0, rotationX: 0 });
-}
-
-// ------------------------------------------------------------
-//  Le curseur en verre : il suit la souris avec du retard
-//  et s'étire dans le sens du mouvement, comme une goutte.
-// ------------------------------------------------------------
-function curseur() {
-    const enveloppe = document.getElementById('curseur');
-    const bulle = document.getElementById('bulle');
-    enveloppe.classList.remove('hidden');
-    gsap.set(bulle, { xPercent: -50, yPercent: -50 });
-
-    const allerX = gsap.quickTo(enveloppe, 'x', { duration: 0.5, ease: 'power3' });
-    const allerY = gsap.quickTo(enveloppe, 'y', { duration: 0.5, ease: 'power3' });
-    // survol : la taille (0 tant que la souris n'a pas bougé) ; etirement : la goutte qui s'allonge
-    const forme = { survol: 0, etirement: 0 };
-    let avant = null;
-
-    const suivre = (e) => {
-        allerX(e.clientX);
-        allerY(e.clientY);
-    };
-    const entrer = () => gsap.to(forme, { survol: 1, duration: 0.8, ease: 'elastic.out(1, 0.5)' });
-    // Un simple point sur les liens et les boutons (pour voir leurs mots basculer),
-    // une grosse sur ce qu'on attrape ou ouvre
-    const survoler = (e) => {
-        const cible = e.target.closest('a, button, #carrousel');
-        const taille = !cible ? 1 : cible.id === 'carrousel' ? 1.7 : cible.matches('.carte-grille') ? 2.2 : 0.2;
-        gsap.to(forme, { survol: taille, duration: 0.7, ease: 'elastic.out(1, 0.45)', overwrite: true });
-    };
-    // À chaque image : la vitesse de la bulle donne son étirement et son angle.
-    const etirer = () => {
-        const x = gsap.getProperty(enveloppe, 'x');
-        const y = gsap.getProperty(enveloppe, 'y');
-        if (avant) {
-            const dx = x - avant.x;
-            const dy = y - avant.y;
-            forme.etirement += (Math.min(Math.hypot(dx, dy) / 40, 0.55) - forme.etirement) * 0.25;
-            if (Math.hypot(dx, dy) > 0.5) gsap.set(enveloppe, { rotation: Math.atan2(dy, dx) * 180 / Math.PI });
-        }
-        avant = { x, y };
-        gsap.set(bulle, { scaleX: forme.survol * (1 + forme.etirement), scaleY: forme.survol * (1 - forme.etirement * 0.45) });
-    };
-
-    addEventListener('pointermove', suivre);
-    addEventListener('pointermove', entrer, { once: true });
-    document.addEventListener('pointerover', survoler);
-    gsap.ticker.add(etirer);
-
-    return () => {
-        removeEventListener('pointermove', suivre);
-        document.removeEventListener('pointerover', survoler);
-        gsap.ticker.remove(etirer);
-        enveloppe.classList.add('hidden');
-    };
 }
 
 // ------------------------------------------------------------
@@ -228,7 +174,13 @@ export function animer({ reglerSortie, descenteMax }) {
                 },
             },
         });
-        gsap.to('#selection .titre-section', { xPercent: -25, ease: 'none', scrollTrigger: { trigger: '#selection', start: 'top top', end: () => `+=${distance()}`, scrub: true, invalidateOnRefresh: true } });
+        // Le titre glisse doucement en sens inverse des affiches : une petite course (12 % de l'écran au plus),
+        // qui démarre et s'arrête en douceur (sine.inOut) et suit le défilement avec un peu de retard (scrub: 1.5).
+        // Elle ne dépasse jamais la marge droite, donc le titre reste dans le site.
+        const titre = document.querySelector('#selection .titre-section');
+        const place = () => document.getElementById('selection').clientWidth - titre.offsetWidth - 2 * titre.parentElement.offsetLeft;
+        const course = () => gsap.utils.clamp(0, innerWidth * 0.12, place());
+        gsap.to(titre, { x: () => course(), ease: 'sine.inOut', scrollTrigger: { trigger: '#selection', start: 'top top', end: () => `+=${distance()}`, scrub: 1.5, invalidateOnRefresh: true } });
         gsap.utils.toArray('.carte-selection').forEach((carte, n) => {
             // Chaque affiche s'ouvre comme un rideau arrondi…
             gsap.fromTo(carte,
@@ -274,7 +226,7 @@ export function animer({ reglerSortie, descenteMax }) {
             },
         });
 
-        // 8. Le curseur en verre, seulement avec une souris.
+        // 8. Le curseur (curseur.js), seulement avec une souris.
         const retirerCurseur = matchMedia('(pointer: fine)').matches ? curseur() : null;
 
         return () => {

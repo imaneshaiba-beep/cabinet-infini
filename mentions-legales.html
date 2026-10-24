@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mentions légales et vie privée · Cabinet infini</title>
+<meta name="description" content="Qui publie Cabinet infini, qui l'héberge, et ce qui arrive à vos données quand vous le visitez : aucun cookie, aucune mesure d'audience.">
+<meta name="robots" content="noindex">
+<meta name="author" content="Shaiba Imane">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#ffffff">
+<link rel="stylesheet" href="/src/style.css">
+</head>
+<body class="bg-white font-sans text-encre antialiased">
+
+<!-- La typo liquide, la même que sur l'écran de chargement du cabinet -->
+<svg class="absolute size-0" aria-hidden="true">
+    <filter id="typo-liquide" x="-10%" y="-40%" width="120%" height="180%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.011 0.022" numOctaves="2" seed="3" result="bruit"/>
+        <feDisplacementMap in="SourceGraphic" in2="bruit" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+</svg>
+
+<!-- La navigation, en verre comme sur le cabinet, avec le retour en pastille noire -->
+<nav class="verre fixed top-4 left-1/2 z-40 flex -translate-x-1/2 items-center gap-3 rounded-full py-1.5 pr-1.5 pl-4 text-sm" aria-label="Navigation">
+    <a href="./" class="font-display text-xl leading-none whitespace-nowrap">Cabinet infini</a>
+    <a href="./" class="rounded-full bg-encre px-3 py-1.5 whitespace-nowrap text-white transition-transform hover:scale-105">← Retour</a>
+</nav>
+
+<main>
+    <!-- 1. L'ouverture : le titre, dont la fin ondule à travers la typo liquide -->
+    <header class="px-4 pt-36 pb-16 sm:px-12 sm:pt-44">
+        <p class="etiquette">Mentions légales · Vie privée</p>
+        <h1 class="mt-8 max-w-5xl font-display text-[clamp(3rem,9vw,8.5rem)] leading-[0.92] tracking-[-0.01em]">Rien à cacher, <em class="typo-liquide">rien à suivre.</em></h1>
+        <p class="mt-10 max-w-2xl font-display text-[clamp(1.4rem,2.6vw,2rem)] leading-snug">
+            Cabinet infini ne dépose aucun cookie et ne mesure pas vos visites. Voici qui le publie, qui l'héberge, et ce qui passe quand même par votre navigateur.
+        </p>
+        <p class="mt-6 text-xs tracking-[0.2em] text-gris uppercase">Mise à jour le 24 octobre 2026</p>
+    </header>
+
+    <!-- 2. En bref : les grands chiffres du cabinet, chacun sous une plaque de verre -->
+    <section class="grid grid-cols-2 gap-3 px-4 pb-6 sm:gap-4 sm:px-12 lg:grid-cols-4" aria-label="En bref">
+        <div class="verre rounded-[2rem] p-5 sm:p-7">
+            <p class="font-display text-[clamp(4rem,9vw,8rem)] leading-none tabular-nums">0</p>
+            <span class="mt-5 block h-px bg-encre"></span>
+            <p class="mt-4 text-sm text-gris">cookie, ni du site ni d'un service tiers</p>
+        </div>
+        <div class="verre rounded-[2rem] p-5 sm:p-7">
+            <p class="font-display text-[clamp(4rem,9vw,8rem)] leading-none tabular-nums">0</p>
+            <span class="mt-5 block h-px bg-encre"></span>
+            <p class="mt-4 text-sm text-gris">outil de statistiques ou de publicité</p>
+        </div>
+        <div class="verre rounded-[2rem] p-5 sm:p-7">
+            <p class="font-display text-[clamp(4rem,9vw,8rem)] leading-none tabular-nums">0</p>
+            <span class="mt-5 block h-px bg-encre"></span>
+            <p class="mt-4 text-sm text-gris">formulaire, compte ou donnée à remplir</p>
+        </div>
+        <div class="verre rounded-[2rem] p-5 sm:p-7">
+            <p class="font-display text-[clamp(4rem,9vw,8rem)] leading-none tabular-nums">1</p>
+            <span class="mt-5 block h-px bg-encre"></span>
+            <p class="mt-4 text-sm text-gris">source extérieure : Are.na, d'où viennent les affiches</p>
+        </div>
+    </section>
+
+    <!-- Le sommaire, en pastilles de verre -->
+    <nav class="px-4 pt-6 pb-10 sm:px-12" aria-label="Sommaire">
+        <ul class="flex flex-wrap gap-2 text-sm">
+            <li><a href="#editeur" class="verre inline-block rounded-full px-4 py-2 transition-transform hover:scale-105">Éditeur</a></li>
+            <li><a href="#hebergeur" class="verre inline-block rounded-full px-4 py-2 transition-transform hover:scale-105">Hébergeur</a></li>
+            <li><a href="#donnees" class="verre inline-block rounded-full px-4 py-2 transition-transform hover:scale-105">Vos données</a></li>
+            <li><a href="#cookies" class="verre inline-block rounded-full px-4 py-2 transition-transform hover:scale-105">Cookies</a></li>
+            <li><a href="#droits" class="verre inline-block rounded-full px-4 py-2 transition-transform hover:scale-105">Vos droits</a></li>
+            <li><a href="#affiches" class="verre inline-block rounded-full px-4 py-2 transition-transform hover:scale-105">Les affiches</a></li>
+        </ul>
+    </nav>
+
+    <!-- 3. Les sections, chacune dans un grand panneau de verre.
+         Le numéro et le titre restent à gauche (sticky), le contenu défile à droite.
+         Dedans, les cartes sont en verre dépoli plus clair, pour ne pas empiler deux flous. -->
+    <div class="space-y-4 px-4 sm:px-12">
+
+        <section id="editeur" class="verre grid scroll-mt-24 grid-cols-1 gap-6 rounded-[2rem] p-6 sm:p-10 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-12">
+            <div class="md:sticky md:top-28 md:self-start">
+                <p class="text-xs text-gris tabular-nums">01</p>
+                <h2 class="mt-2 font-display text-[clamp(2.2rem,4.5vw,3.6rem)] leading-none">Éditeur</h2>
+            </div>
+            <dl class="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                <div>
+                    <dt class="text-xs tracking-[0.2em] text-gris uppercase">Publié par</dt>
+                    <dd class="mt-2 font-display text-3xl leading-tight">Shaiba Imane</dd>
+                    <dd class="mt-1 text-sm text-gris">à titre personnel</dd>
+                </div>
+                <div>
+                    <dt class="text-xs tracking-[0.2em] text-gris uppercase">Conception, design et code</dt>
+                    <dd class="mt-2 font-display text-3xl leading-tight">Shaiba Imane</dd>
+                </div>
+                <div>
+                    <dt class="text-xs tracking-[0.2em] text-gris uppercase">Contact</dt>
+                    <dd class="mt-2"><span class="courriel" data-nom="inifni.tenibac" data-domaine="moc.kooltuo" data-classe="underline underline-offset-4">cabinet.infini [arobase] outlook [point] com</span></dd>
+                </div>
+                <div>
+                    <dt class="text-xs tracking-[0.2em] text-gris uppercase">Statut</dt>
+                    <dd class="mt-2">Projet de portfolio, sans activité commerciale, donc sans numéro d'entreprise.</dd>
+                </div>
+            </dl>
+        </section>
+
+        <section id="hebergeur" class="verre grid scroll-mt-24 grid-cols-1 gap-6 rounded-[2rem] p-6 sm:p-10 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-12">
+            <div class="md:sticky md:top-28 md:self-start">
+                <p class="text-xs text-gris tabular-nums">02</p>
+                <h2 class="mt-2 font-display text-[clamp(2.2rem,4.5vw,3.6rem)] leading-none">Hébergeur</h2>
+            </div>
+            <div>
+                <p class="font-display text-3xl leading-tight">o2switch</p>
+                <p class="mt-3">Chemin des Pardiaux, 63000 Clermont-Ferrand, France</p>
+                <p class="mt-1 text-sm text-gris">SIREN 510 909 807 · <a href="https://www.o2switch.fr" target="_blank" rel="noopener" class="underline underline-offset-2">o2switch.fr</a></p>
+            </div>
+        </section>
+
+        <section id="donnees" class="verre grid scroll-mt-24 grid-cols-1 gap-6 rounded-[2rem] p-6 sm:p-10 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-12">
+            <div class="md:sticky md:top-28 md:self-start">
+                <p class="text-xs text-gris tabular-nums">03</p>
+                <h2 class="mt-2 font-display text-[clamp(2.2rem,4.5vw,3.6rem)] leading-none">Vos données</h2>
+            </div>
+            <div>
+                <h3 class="text-xs tracking-[0.2em] text-gris uppercase">Ce que le site ne fait pas</h3>
+                <ul class="mt-6 grid gap-x-8 gap-y-4 sm:grid-cols-2">
+                    <li class="flex gap-3"><span class="font-display text-xl leading-6 text-rouge" aria-hidden="true">×</span>Aucun cookie, ni de ce site ni d'un service tiers.</li>
+                    <li class="flex gap-3"><span class="font-display text-xl leading-6 text-rouge" aria-hidden="true">×</span>Rien n'est enregistré dans votre navigateur.</li>
+                    <li class="flex gap-3"><span class="font-display text-xl leading-6 text-rouge" aria-hidden="true">×</span>Pas de statistiques de visite ni de publicité.</li>
+                    <li class="flex gap-3"><span class="font-display text-xl leading-6 text-rouge" aria-hidden="true">×</span>Pas de bouton de réseau social ni de vidéo intégrée.</li>
+                    <li class="flex gap-3 sm:col-span-2"><span class="font-display text-xl leading-6 text-rouge" aria-hidden="true">×</span>Pas de Google : les polices sont hébergées sur ce site.</li>
+                </ul>
+
+                <h3 class="mt-14 text-xs tracking-[0.2em] text-gris uppercase">Ce qui passe quand même, et pourquoi</h3>
+                <!-- Chaque échange sous forme de carte : quand, vers qui, quoi, pourquoi -->
+                <div class="mt-6 space-y-3">
+                    <article class="rounded-3xl bg-white/55 p-6 shadow-[inset_0_1px_0_rgb(255_255_255/0.95),0_8px_24px_-12px_rgb(0_0_0/0.12)] ring-1 ring-white/80 sm:p-8">
+                        <p class="flex flex-wrap items-center gap-3 text-xs text-gris">
+                            <span class="rounded-full bg-encre px-2.5 py-1 text-white">À chaque visite</span>
+                            Votre navigateur <span aria-hidden="true">→</span> o2switch, en France
+                        </p>
+                        <h4 class="mt-4 font-display text-3xl leading-tight">L'hébergeur</h4>
+                        <p class="mt-3">Comme pour tout site, le serveur note dans ses journaux techniques votre adresse IP, la date, la page demandée et le type de navigateur, pour faire fonctionner et protéger le site. Les journaux restent en France et sont conservés selon la politique d'o2switch.</p>
+                        <p class="mt-4 text-sm text-gris">Base légale : intérêt légitime à faire fonctionner le site (article 6.1.f du RGPD).</p>
+                    </article>
+                    <article class="rounded-3xl bg-white/55 p-6 shadow-[inset_0_1px_0_rgb(255_255_255/0.95),0_8px_24px_-12px_rgb(0_0_0/0.12)] ring-1 ring-white/80 sm:p-8">
+                        <p class="flex flex-wrap items-center gap-3 text-xs text-gris">
+                            <span class="rounded-full bg-encre px-2.5 py-1 text-white">Pour afficher les affiches</span>
+                            Votre navigateur <span aria-hidden="true">→</span> Are.na, aux États-Unis
+                        </p>
+                        <h4 class="mt-4 font-display text-3xl leading-tight">Are.na</h4>
+                        <p class="mt-3">Le site lit des chaînes publiques d'<a href="https://www.are.na" target="_blank" rel="noopener" class="underline underline-offset-2">Are.na</a> (Are.na Inc.). Votre navigateur contacte directement <code class="text-sm">api.are.na</code>, <code class="text-sm">images.are.na</code> et, pour les images plus anciennes, <code class="text-sm break-all">d2w9rnfcy7mm78.cloudfront.net</code>, servis par Cloudflare et Amazon CloudFront. Ils reçoivent votre adresse IP, le type de votre navigateur et l'adresse de ce site. Aucun cookie n'est envoyé ni reçu, mais ces données peuvent être traitées aux États-Unis.</p>
+                        <p class="mt-4 text-sm text-gris">Base légale : intérêt légitime à montrer les affiches, qui sont tout le contenu du site. Pour en savoir plus, consultez la politique de confidentialité d'Are.na sur leur site.</p>
+                    </article>
+                    <article class="rounded-3xl bg-white/55 p-6 shadow-[inset_0_1px_0_rgb(255_255_255/0.95),0_8px_24px_-12px_rgb(0_0_0/0.12)] ring-1 ring-white/80 sm:p-8">
+                        <p class="flex flex-wrap items-center gap-3 text-xs text-gris">
+                            <span class="rounded-full border border-encre/30 px-2.5 py-1 text-encre">Seulement si vous cliquez</span>
+                            Vous <span aria-hidden="true">→</span> la page de l'affiche sur Are.na
+                        </p>
+                        <h4 class="mt-4 font-display text-3xl leading-tight">Les liens «&nbsp;Voir sur Are.na&nbsp;»</h4>
+                        <p class="mt-3">Ils ouvrent la page de l'affiche sur Are.na. À partir de là, ce sont les règles d'Are.na qui s'appliquent.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="cookies" class="verre grid scroll-mt-24 grid-cols-1 gap-6 rounded-[2rem] p-6 sm:p-10 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-12">
+            <div class="md:sticky md:top-28 md:self-start">
+                <p class="text-xs text-gris tabular-nums">04</p>
+                <h2 class="mt-2 font-display text-[clamp(2.2rem,4.5vw,3.6rem)] leading-none">Cookies</h2>
+            </div>
+            <div>
+                <div class="overflow-x-auto rounded-3xl bg-white/55 shadow-[inset_0_1px_0_rgb(255_255_255/0.95)] ring-1 ring-white/80">
+                    <table class="w-full min-w-[32rem] text-left text-sm">
+                        <thead class="text-xs tracking-[0.2em] text-gris uppercase">
+                            <tr class="border-b border-black/10">
+                                <th class="px-6 py-4 font-normal">Nom</th>
+                                <th class="px-6 py-4 font-normal">Rôle</th>
+                                <th class="px-6 py-4 font-normal">Durée</th>
+                                <th class="px-6 py-4 font-normal">Consentement</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="px-6 py-8 font-display text-2xl" colspan="4">Aucun cookie n'est utilisé sur ce site.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="mt-6">C'est pourquoi il n'y a pas de bandeau cookies : il n'y a rien à accepter ni à refuser. Si une mesure d'audience ou une vidéo est ajoutée un jour, ce tableau sera mis à jour, et un bandeau vous demandera votre accord avant tout dépôt.</p>
+            </div>
+        </section>
+
+        <section id="droits" class="verre grid scroll-mt-24 grid-cols-1 gap-6 rounded-[2rem] p-6 sm:p-10 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-12">
+            <div class="md:sticky md:top-28 md:self-start">
+                <p class="text-xs text-gris tabular-nums">05</p>
+                <h2 class="mt-2 font-display text-[clamp(2.2rem,4.5vw,3.6rem)] leading-none">Vos droits</h2>
+            </div>
+            <div>
+                <p>L'éditeur ne conserve lui-même aucune donnée sur les visiteurs. Vous pouvez néanmoins écrire à l'adresse de contact pour toute question, ou pour exercer vos droits d'accès, de rectification, d'effacement et d'opposition.</p>
+                <p class="mt-4">Vous pouvez aussi introduire une réclamation auprès de l'<a href="https://www.autoriteprotectiondonnees.be" target="_blank" rel="noopener" class="underline underline-offset-2">Autorité de protection des données</a>, rue de la Presse 35, 1000 Bruxelles.</p>
+            </div>
+        </section>
+
+        <section id="affiches" class="verre grid scroll-mt-24 grid-cols-1 gap-6 rounded-[2rem] p-6 sm:p-10 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-12">
+            <div class="md:sticky md:top-28 md:self-start">
+                <p class="text-xs text-gris tabular-nums">06</p>
+                <h2 class="mt-2 font-display text-[clamp(2.2rem,4.5vw,3.6rem)] leading-none">Les affiches</h2>
+            </div>
+            <div>
+                <p>Les affiches restent la propriété de leurs auteurs. Elles proviennent de chaînes publiques d'Are.na, rassemblées par leurs contributeurs, et sont montrées ici sans but commercial, avec un lien vers leur source.</p>
+                <p class="mt-4">Si vous êtes l'auteur d'une affiche et souhaitez qu'elle n'apparaisse plus, écrivez à l'adresse de contact : elle sera retirée.</p>
+            </div>
+        </section>
+    </div>
+</main>
+
+<!-- La fin, comme sur le cabinet : un bandeau qui défile, plus vite quand on fait défiler la page (mentions.js) -->
+<footer class="mt-24 overflow-hidden pt-10 pb-10">
+    <div id="bandeau" class="flex w-max font-display text-[clamp(5rem,17vw,17rem)] leading-none whitespace-nowrap" aria-hidden="true">
+        <span class="pr-[0.25em]">Cabinet infini <em>—</em></span><span class="pr-[0.25em]">Cabinet infini <em>—</em></span>
+    </div>
+    <div class="verre mx-4 mt-14 flex flex-wrap justify-between gap-4 rounded-full px-6 py-3 text-xs text-gris sm:mx-12">
+        <a href="./" class="underline underline-offset-2">← Retour au cabinet</a>
+        <p>Conception et code : Shaiba Imane · 2026</p>
+    </div>
+</footer>
+
+<script type="module" src="/src/mentions.js"></script>
+</body>
+</html>

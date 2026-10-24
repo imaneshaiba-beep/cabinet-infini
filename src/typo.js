@@ -27,6 +27,17 @@ const LANGUES = [
     ['Plakát', 'en tchèque', 'font-medium uppercase tracking-[-0.06em]'],
 ];
 
+// La largeur d'un mot avec ses classes, mesurée dans le lien sans être vue.
+function largeurDe(lien, texte, classe) {
+    const essai = document.createElement('span');
+    essai.className = `invisible absolute whitespace-pre ${classe}`;
+    essai.textContent = texte;
+    lien.append(essai);
+    const largeur = essai.getBoundingClientRect().width;
+    essai.remove();
+    return largeur;
+}
+
 // La navigation : au survol (ou au clavier), chaque lien bascule vers sa version italique.
 // La bascule va dans un span : sur le lien lui-même, elle écraserait « hidden sm:block ».
 export function navigationTypo() {
@@ -38,8 +49,21 @@ export function navigationTypo() {
         const classeSurvol = marque ? '' : 'font-display italic text-[1.15em] leading-none';
 
         lien.textContent = '';
-        const bascule = creerBascule(lien.appendChild(document.createElement('span')), { aligner: 'center', duree: 0.3, decalage: 0.025 });
+        // « Cabinet » reste calé à gauche : seul « infini » devient « ∞ ».
+        const span = lien.appendChild(document.createElement('span'));
+        const bascule = creerBascule(span, { aligner: marque ? 'start' : 'center', duree: 0.3, decalage: 0.025 });
         bascule.afficher(repos, '', { immediat: true });
+
+        // Le lien garde la largeur du plus long de ses deux mots : sinon la barre, centrée,
+        // se resserre ou s'élargit à chaque survol. Mesuré une fois les polices chargées, et à chaque
+        // redimensionnement (un lien caché sur téléphone mesure 0 et réapparaît sur un grand écran).
+        const reserver = () => {
+            const style = getComputedStyle(span);
+            const marges = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+            span.style.minWidth = `${Math.ceil(Math.max(largeurDe(lien, repos, ''), largeurDe(lien, survol, classeSurvol)) + marges)}px`;
+        };
+        document.fonts.ready.then(reserver);
+        addEventListener('resize', reserver);
 
         const entrer = () => bascule.afficher(survol, classeSurvol);
         const sortir = () => bascule.afficher(repos, '');

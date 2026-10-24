@@ -36,7 +36,6 @@ export function remplirSelection() {
                 <figcaption class="verre absolute bottom-3 left-3 max-w-[85%] truncate rounded-full px-3 py-1 text-xs">${legende}</figcaption>
             </figure>`;
     }).join('');
-    document.getElementById('selectionNombre').textContent = choix.length;
 }
 
 // ------------------------------------------------------------
@@ -87,7 +86,7 @@ export function preparerFiltres({ avant = () => {}, apres = () => {}, choix = ()
     const options = [{ slug: '', nom: 'Tout' }, ...CHAINES];
     filtres.innerHTML = options.map(o => `
         <button type="button" data-slug="${echapper(o.slug)}" aria-pressed="${o.slug === ''}"
-                class="rounded-full px-3.5 py-1.5 transition-colors hover:bg-white/70 aria-pressed:bg-encre aria-pressed:text-white">${echapper(o.nom)}</button>`).join('');
+                class="shrink-0 rounded-full px-3.5 py-1.5 whitespace-nowrap transition-colors hover:bg-white/70 aria-pressed:bg-encre aria-pressed:text-white">${echapper(o.nom)}</button>`).join('');
 
     filtres.addEventListener('click', (e) => {
         const bouton = e.target.closest('button');

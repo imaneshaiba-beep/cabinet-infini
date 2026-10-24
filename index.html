@@ -5,13 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cabinet infini</title>
 <meta name="description" content="Un cabinet d'affiches sans fond : des milliers d'affiches choisies par des graphistes, vues à travers une lentille de verre liquide.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<meta name="author" content="Shaiba Imane">
+<!-- L'aperçu quand on colle le lien (LinkedIn, iMessage, WhatsApp…). Les réseaux veulent des adresses complètes. -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_BE">
+<meta property="og:site_name" content="Cabinet infini">
+<meta property="og:title" content="Cabinet infini">
+<meta property="og:description" content="Des milliers d'affiches choisies par des graphistes, vues à travers une lentille de verre liquide. Un projet de Shaiba Imane.">
+<meta property="og:url" content="https://shaibanova.techniques-graphiques.be/cabinet-infini/">
+<meta property="og:image" content="https://shaibanova.techniques-graphiques.be/cabinet-infini/apercu.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Le mur d'affiches de Cabinet infini, vu à travers une lentille de verre liquide.">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#ffffff">
-<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/src/style.css">
 </head>
 <body class="bg-white font-sans text-encre antialiased">
 
@@ -88,7 +98,6 @@
     <!-- 3. La sélection : la section reste en place et les affiches défilent de côté -->
     <!-- bg-white : le titre inversé a besoin d'un vrai fond blanc derrière lui, même quand GSAP isole la section pendant l'épinglage -->
     <section id="selection" class="relative h-dvh overflow-hidden bg-white">
-        <p class="etiquette absolute top-24 left-6 z-10 sm:top-28 sm:left-12">Sélection · <span id="selectionNombre">0</span></p>
         <!-- mix-blend-difference sur le bloc lui-même : le titre blanc s'inverse, noir sur le fond blanc, en négatif sur les affiches -->
         <div class="pointer-events-none absolute top-36 left-6 z-10 text-white mix-blend-difference sm:top-40 sm:left-12">
             <h2 class="titre-section font-display text-[clamp(2.8rem,8vw,8rem)] leading-[0.95]">Le style suisse</h2>
@@ -109,17 +118,18 @@
             <p class="mt-4 text-sm text-gris">déjà arrivées sur cette page, et ça monte pendant que vous lisez</p>
         </div>
         <div class="chiffre-bloc">
-            <p id="infini" class="font-display text-[clamp(4.5rem,11vw,11rem)] leading-none">∞</p>
+            <p id="infini" class="w-fit font-display text-[clamp(4.5rem,11vw,11rem)] leading-none">∞</p>
             <span class="trait mt-6 block h-px origin-left bg-encre"></span>
             <p class="mt-4 text-sm text-gris">défilement, sans fin et sans pause</p>
         </div>
     </section>
 
-    <!-- 4 bis. Un jeu de typographie : le mot « affiche » dans d'autres langues, qui bascule lettre par lettre -->
+    <!-- 4 bis. Un jeu de typographie : le mot «&nbsp;affiche&nbsp;» dans d'autres langues, qui bascule lettre par lettre -->
     <section id="langues" class="flex min-h-[85vh] flex-col items-center justify-center overflow-hidden px-6 py-32 text-center">
         <p class="etiquette">Une affiche se dit</p>
-        <p id="langueMot" class="mt-10 text-[clamp(4rem,16vw,16rem)] leading-[0.9]">Affiche</p>
-        <p id="langueNom" class="mt-8 text-xs tracking-[0.2em] text-gris uppercase">en français</p>
+        <!-- leading-none et de grandes marges : à cette taille, les capitales et les accents (Plakát) montent haut au-dessus de la ligne -->
+        <p id="langueMot" class="mt-20 text-[clamp(4rem,16vw,16rem)] leading-none sm:mt-32 lg:mt-40">Affiche</p>
+        <p id="langueNom" class="mt-14 text-xs tracking-[0.2em] text-gris uppercase sm:mt-20 lg:mt-24">en français</p>
     </section>
 
     <!-- 5. La collection : filtres par chaîne (animés avec Flip) et grille qui s'allonge -->
@@ -129,7 +139,7 @@
                 <p class="etiquette">Collection</p>
                 <h2 class="mt-4 min-h-[0.95em] font-display text-[clamp(2.4rem,8vw,8rem)] leading-[0.95]"><span id="collectionTitre">Toutes les chaînes</span></h2>
             </div>
-            <div id="filtres" class="verre flex flex-wrap gap-1 rounded-full p-1.5 text-sm" role="group" aria-label="Filtrer par chaîne"></div>
+            <div id="filtres" class="verre flex max-w-full gap-1 overflow-x-auto rounded-full p-1.5 text-sm [scrollbar-width:none] sm:flex-wrap sm:overflow-visible" role="group" aria-label="Filtrer par chaîne"></div>
         </div>
         <div id="grille" class="relative mt-14 grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4"></div>
         <div class="mt-20 flex justify-center">
@@ -144,16 +154,11 @@
         <span class="pr-[0.25em]">Cabinet infini <em>—</em></span><span class="pr-[0.25em]">Cabinet infini <em>—</em></span>
     </div>
     <div class="mt-14 flex flex-wrap justify-between gap-4 px-6 text-xs text-gris sm:px-12">
-        <p>Images : chaînes publiques d'<a href="https://www.are.na" target="_blank" rel="noopener" class="underline underline-offset-2">Are.na</a>, choisies par leurs contributeurs.</p>
-        <p>Projet portfolio · 2026</p>
+        <p>Affiches : quatre chaînes publiques d'<a href="https://www.are.na" target="_blank" rel="noopener" class="underline underline-offset-2">Are.na</a>, choisies par Shaiba Imane et alimentées par leurs contributeurs.</p>
+        <p>Conception et code : Shaiba Imane · 2026 · <a href="mentions-legales.html" class="underline underline-offset-2">Mentions légales et vie privée</a></p>
     </div>
 </footer>
 
-<!-- Le curseur en verre (seulement avec une souris) -->
-<div id="curseur" class="pointer-events-none fixed top-0 left-0 z-50 hidden" aria-hidden="true">
-    <div id="bulle" class="verre size-12 rounded-full"></div>
-</div>
-
-<script type="module" src="/main.js"></script>
+<script type="module" src="/src/main.js"></script>
 </body>
 </html>

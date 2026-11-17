@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le générique · Cabinet infini</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="entete">
+    <p class="etiquette">Générique</p>
+    <!-- Le titre que SplitText découpe lettre par lettre (réglage T) -->
+    <h1 class="titre">Cabinet infini</h1>
+    <!-- Le message d'erreur (zone RÉSEAU) : caché tant que tout va bien -->
+    <p class="message" hidden></p>
+</header>
+
+<section class="tableau" aria-label="Le générique">
+    <div class="tableau__bloc">
+        <!-- Le compteur (réglage C) -->
+        <p class="compteur">0</p>
+        <p class="legende">pixels de large, toutes affiches mises bout à bout</p>
+    </div>
+    <div class="tableau__bloc">
+        <!-- La jauge (réglage J) : un disque qui grandit -->
+        <div class="jauge" aria-hidden="true"><span class="jauge__disque"></span></div>
+        <p class="legende">3 secondes</p>
+    </div>
+</section>
+
+<!-- Les deux commandes (point 12) -->
+<div class="commandes verre">
+    <button type="button" class="rejouer">Rejouer</button>
+    <label class="vitesse">
+        Vitesse
+        <input type="range" class="vitesse__curseur" min="0.25" max="2" step="0.25" value="1">
+        <output class="vitesse__valeur">1</output>
+    </label>
+</div>
+
+<!-- Les cartes, fabriquées en JavaScript (zone RENDU) -->
+<main class="galerie"></main>
+
+<!-- Bonus : une seconde section, révélée au défilement (ScrollTrigger + scrub) -->
+<section class="suite">
+    <div class="suite__contenu">
+        <p class="etiquette">La suite</p>
+        <p class="suite__texte">Seize affiches, quatre styles. Le cabinet, lui, en garde <em>des milliers.</em></p>
+        <a class="suite__lien" href="https://shaibanova.techniques-graphiques.be/cabinet-infini/">Ouvrir le Cabinet infini</a>
+    </div>
+</section>
+
+<footer class="pied">
+    <p>Shaiba Imane · Applications multimédia, séance 11 · Affiches : <a href="https://www.are.na" target="_blank" rel="noopener">Are.na</a></p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js" integrity="sha384-XmJ9SoHtVOHoQUcKvFAzVXwdkKo1Ie3bhmSoIAkcdsHGaIrVJIkmozyq0FJeb/Ly" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js" integrity="sha384-SWJ0lLVRoipvHh59xj0pL7uC7Ih51F+5smaFtrG+2nr+TlDZU5SYJHmxfolbeNTr" crossorigin="anonymous"></script>
+<!-- Pour le bonus : la section révélée au défilement -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js" integrity="sha384-wl5TeDVvOWt30Pbf8aSo2ZrzsOjddu3avOBvHe+p+OhJt9gP6w9YXmDkN5DK2/dF" crossorigin="anonymous"></script>
+<script src="script.js" defer></script>
+</body>
+</html>

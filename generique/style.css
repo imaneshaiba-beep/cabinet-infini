@@ -1,0 +1,343 @@
+/* ============================================================
+   Le générique · Cabinet infini
+   Le design du Cabinet (polices, couleurs, verre), en CSS simple :
+   la page s'ouvre telle quelle, sans Vite ni Tailwind à compiler.
+   Règle du devoir (point 10) : aucune transition CSS ni :hover
+   sur la carte ou son image. C'est GSAP qui gère le survol.
+   ============================================================ */
+
+/* ---------- Les polices, hébergées à côté de la page (licence OFL, voir fonts/) ---------- */
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('fonts/inter-latin-wght-normal.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('fonts/inter-latin-ext-wght-normal.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+    font-family: 'Instrument Serif';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('fonts/instrument-serif-latin-400-normal.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Instrument Serif';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('fonts/instrument-serif-latin-ext-400-normal.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+    font-family: 'Instrument Serif';
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url('fonts/instrument-serif-latin-400-italic.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ---------- Les couleurs du Cabinet ---------- */
+:root {
+    --encre: #1c1b19;
+    --gris: #6b665e;
+    --papier: #f4f0e8;
+    --carton: #e8e2d6;
+    --rouge: #d23c24;
+    --bleu: #1e6bff;
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* Réglage E : les cartes entrent depuis la droite (x: 60). Sans clip, la page déborde pendant l'entrée. */
+html,
+body {
+    overflow-x: clip;
+}
+
+body {
+    margin: 0;
+    background: #fff;
+    color: var(--encre);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+a {
+    color: inherit;
+}
+
+/* ---------- Le verre liquide (le même que sur le Cabinet) ---------- */
+.verre,
+.etiquette {
+    background: rgb(255 255 255 / 0.42);
+    backdrop-filter: blur(16px) saturate(1.8) brightness(1.04);
+    -webkit-backdrop-filter: blur(16px) saturate(1.8) brightness(1.04);
+    border: 1px solid rgb(255 255 255 / 0.7);
+    box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.95),
+        inset 0 -1px 1px rgb(0 0 0 / 0.04),
+        inset 2px 0 2px -1px rgb(255 50 110 / 0.28),
+        inset -2px 0 2px -1px rgb(40 130 255 / 0.32),
+        0 10px 30px -10px rgb(0 0 0 / 0.18),
+        0 1px 3px rgb(0 0 0 / 0.06);
+}
+
+.etiquette {
+    display: inline-flex;
+    margin: 0;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}
+
+/* ---------- L'en-tête ---------- */
+.entete {
+    padding: 6rem 1.5rem 2rem;
+}
+
+.titre {
+    margin: 1.5rem 0 0;
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(3rem, 10vw, 9rem);
+    line-height: 0.95;
+    letter-spacing: -0.01em;
+}
+
+.message {
+    max-width: 40rem;
+    margin: 2rem 0 0;
+    font-size: 1.1rem;
+    color: var(--rouge);
+}
+
+/* ---------- Le compteur et la jauge ---------- */
+.tableau {
+    display: grid;
+    gap: 3rem;
+    padding: 2rem 1.5rem 3rem;
+}
+
+.compteur {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: clamp(4rem, 11vw, 10rem);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.legende {
+    margin: 1rem 0 0;
+    font-size: 0.875rem;
+    color: var(--gris);
+}
+
+/* Réglage J : un disque qui grandit (scale de 0 à 1), depuis son centre */
+.jauge {
+    display: grid;
+    place-items: center;
+    width: clamp(6rem, 14vw, 10rem);
+    aspect-ratio: 1;
+    border: 1px solid rgb(28 27 25 / 0.2);
+    border-radius: 50%;
+}
+
+.jauge__disque {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--encre);
+    transform-origin: 50% 50%;
+}
+
+/* ---------- Les commandes ---------- */
+.commandes {
+    position: sticky;
+    top: 1rem;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    width: fit-content;
+    margin: 0 1.5rem 2rem;
+    padding: 0.4rem 1rem 0.4rem 0.4rem;
+    border-radius: 999px;
+    font-size: 0.875rem;
+}
+
+.rejouer {
+    padding: 0.5rem 1rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--encre);
+    color: #fff;
+    font: inherit;
+    cursor: pointer;
+}
+
+.vitesse {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.vitesse__curseur {
+    accent-color: var(--encre);
+}
+
+.vitesse__valeur {
+    min-width: 2.5rem;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Les cartes ---------- */
+.galerie {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.5rem 1rem;
+    padding: 0 1.5rem 6rem;
+}
+
+.carte {
+    position: relative;
+}
+
+.carte__cadre {
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: #f5f5f5;
+}
+
+.carte__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.carte__nom {
+    margin: 0.75rem 0 0;
+    font-size: 0.875rem;
+    line-height: 1.3;
+}
+
+.carte__infos {
+    margin: 0.35rem 0 0;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    line-height: 1.6;
+    text-transform: uppercase;
+    color: var(--gris);
+}
+
+/* La pastille : trois états, trois classes écrites en entier (point 4).
+   Renomme-les selon les trois valeurs que tu choisis dans Are.na. */
+.pastille {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px #fff;
+}
+
+.pastille--un {
+    background: var(--rouge);
+}
+
+.pastille--deux {
+    background: var(--bleu);
+}
+
+.pastille--trois {
+    background: var(--gris);
+}
+
+/* ---------- Bonus : la section révélée au défilement ---------- */
+.suite {
+    display: flex;
+    align-items: center;
+    min-height: 90vh;
+    padding: 6rem 1.5rem;
+}
+
+.suite__texte {
+    max-width: 18ch;
+    margin: 1.5rem 0 0;
+    font-family: var(--serif);
+    font-size: clamp(2.4rem, 7vw, 6.5rem);
+    line-height: 1;
+}
+
+.suite__lien {
+    display: inline-block;
+    margin-top: 2rem;
+    font-size: 0.875rem;
+    text-underline-offset: 4px;
+}
+
+/* ---------- Le pied de page ---------- */
+.pied {
+    padding: 2rem 1.5rem 3rem;
+    border-top: 1px solid rgb(0 0 0 / 0.1);
+    font-size: 0.75rem;
+    color: var(--gris);
+}
+
+/* ---------- Plus grand écran ---------- */
+@media (min-width: 640px) {
+    .entete,
+    .tableau,
+    .galerie,
+    .suite,
+    .pied {
+        padding-left: 3rem;
+        padding-right: 3rem;
+    }
+
+    .commandes {
+        margin-left: 3rem;
+    }
+
+    .tableau {
+        grid-template-columns: 1fr auto;
+        align-items: end;
+    }
+
+    .galerie {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 2.5rem 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .galerie {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}

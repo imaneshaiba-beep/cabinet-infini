@@ -108,8 +108,10 @@ html {
     scrollbar-gutter: stable;
 }
 
+/* Le défilement doux seulement sur les mentions légales : sur le cabinet, c'est ScrollToPlugin
+   (animations.js) qui fait glisser vers les ancres, et les deux ensemble se contrarient. */
 @media (prefers-reduced-motion: no-preference) {
-    html {
+    html.defilement-doux {
         scroll-behavior: smooth;
     }
 }

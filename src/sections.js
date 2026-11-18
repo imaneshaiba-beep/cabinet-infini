@@ -7,10 +7,12 @@
 import { gsap } from 'gsap';
 import { Flip } from 'gsap/Flip';
 import { affiches, CHAINES } from './donnees.js';
+import { enMouvement } from './animations.js';
 
 gsap.registerPlugin(Flip);
 
-const reduire = matchMedia('(prefers-reduced-motion: reduce)');
+// ===== RENDU =====
+// Les cartes fabriquées en JavaScript à partir des données ; toute valeur d'Are.na passe par echapper().
 
 // Comme htmlspecialchars() en PHP : un texte reçu ne doit jamais être lu comme du HTML.
 function echapper(texte) {
@@ -88,9 +90,12 @@ export function preparerFiltres({ avant = () => {}, apres = () => {}, choix = ()
         <button type="button" data-slug="${echapper(o.slug)}" aria-pressed="${o.slug === ''}"
                 class="shrink-0 rounded-full px-3.5 py-1.5 whitespace-nowrap transition-colors hover:bg-white/70 aria-pressed:bg-encre aria-pressed:text-white">${echapper(o.nom)}</button>`).join('');
 
+    let tour = 0; // le numéro du dernier filtre : seul le dernier Flip lance apres()
+
     filtres.addEventListener('click', (e) => {
         const bouton = e.target.closest('button');
         if (!bouton) return;
+        const ce = ++tour;
         filtre = bouton.dataset.slug || null;
         filtres.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === bouton)));
         choix(filtre ? bouton.textContent.trim() : null);
@@ -109,7 +114,14 @@ export function preparerFiltres({ avant = () => {}, apres = () => {}, choix = ()
         // les autres restent à leur place finale et glissent avec une simple transformation.
         const partantes = cartes.filter(c => c.hidden && visiblesAvant.has(c));
         const hauteurApres = grille.offsetHeight;
-        const duree = reduire.matches ? 0 : 0.9;
+        const duree = 0.9;
+
+        // Avec « réduire les animations » (enMouvement est faux) : le filtre s'applique sans aucune animation.
+        if (!enMouvement) {
+            cartes.forEach((c) => { if (c.hidden) delete c.dataset.vue; else c.dataset.vue = ''; });
+            apres();
+            return;
+        }
 
         // Une carte qui remonte de très loin passerait toute l'animation hors de l'écran :
         // elle apparaît plutôt sur place, avec la même bascule que les cartes au défilement.
@@ -127,12 +139,15 @@ export function preparerFiltres({ avant = () => {}, apres = () => {}, choix = ()
             });
         }
 
-        if (loin.length && !reduire.matches) {
+        if (loin.length) {
             gsap.fromTo(loin,
                 { opacity: 0, y: 90, rotationX: -50, transformPerspective: 900, transformOrigin: '50% 0%' },
                 { opacity: 1, y: 0, rotationX: 0, duration: 1, ease: 'expo.out', stagger: 0.06, delay: 0.2, overwrite: true });
         }
 
+        // Flip.from() anime de l'état noté plus haut (Flip.getState) vers la nouvelle place.
+        // absolute : seulement les cartes qui partent (pas true pour toutes), pour que la grille
+        // garde sa hauteur pendant l'animation et que le pied de page ne saute pas.
         Flip.from(etat, {
             targets: cartes.filter(c => !loin.includes(c)),
             duration: duree,
@@ -142,7 +157,10 @@ export function preparerFiltres({ avant = () => {}, apres = () => {}, choix = ()
             stagger: 0.012,
             onEnter: els => gsap.fromTo(els, { opacity: 0, scale: 0.6, rotationX: -50, transformPerspective: 900 }, { opacity: 1, scale: 1, rotationX: 0, duration: 0.9, ease: 'expo.out', stagger: 0.02 }),
             onLeave: els => gsap.to(els, { opacity: 0, scale: 0.6, duration: 0.45, ease: 'power2.in' }),
-            onComplete: apres,
+            onComplete: () => { if (ce === tour) apres(); },
         });
     });
 }
+
+// ===== STYLE =====
+// rien ici : les classes Tailwind sont écrites en entier dans le HTML, le reste est dans style.css.

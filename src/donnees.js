@@ -30,12 +30,19 @@ export function quandArrivent(fonction) {
     abonnes.add(fonction);
 }
 
+// ===== RÉSEAU =====
+// fetch() vers Are.na : reponse.ok testé, erreur lisible (429 = trop d'appels).
+// chargerPage() et chargerReserve(), plus bas, passent aussi par le réseau.
+
 async function lire(url) {
     const reponse = await fetch(url);
     if (reponse.status === 429) throw new Error('Are.na est débordé, réessayez dans une minute');
     if (!reponse.ok) throw new Error(`Are.na répond ${reponse.status}`);
     return reponse.json();
 }
+
+// ===== DONNÉES =====
+// Ce qu'on garde de chaque bloc d'Are.na, sans doublon, et les chiffres de la page.
 
 // Les titres d'Are.na sont souvent vides, « image » ou un nom de fichier : on les écarte.
 // DOMParser décode « &amp; » sans jamais exécuter de HTML.

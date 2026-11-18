@@ -7,19 +7,26 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { stats } from './donnees.js';
 import { curseur } from './curseur.js';
 
-gsap.registerPlugin(ScrollTrigger, SplitText);
+gsap.registerPlugin(ScrollTrigger, SplitText, ScrollToPlugin);
 
 const entier = new Intl.NumberFormat('fr-FR');
 const media = gsap.matchMedia();
 const MOUVEMENT = '(prefers-reduced-motion: no-preference)';
 const CALME = '(prefers-reduced-motion: reduce)';
 
+// Vrai seulement dans media.add(MOUVEMENT) : avec « réduire les animations », rien ne bouge (filtre compris).
+export let enMouvement = false;
+
 export function rafraichir() {
     ScrollTrigger.refresh();
 }
+
+// ===== MOUVEMENT =====
+// Les tweens : ce qui bouge. Leurs déclencheurs sont dans la zone suivante.
 
 // ------------------------------------------------------------
 //  Les chiffres : ils comptent depuis zéro à leur arrivée,
@@ -41,29 +48,44 @@ export function majChiffres() {
 // ------------------------------------------------------------
 //  Les cartes de la collection : elles basculent depuis le fond, par lots
 // ------------------------------------------------------------
-const enAttente = new Set(); // les déclencheurs des cartes qui ne sont pas encore apparues
+const declencheurs = new Set(); // les déclencheurs des cartes de la grille
+const CACHEE = { y: 140, rotationX: -55, opacity: 0, transformPerspective: 1000, transformOrigin: '50% 0%' };
+const START_CARTES = 'top 85%';
 
-export function reveler(cartes) {
-    if (!cartes.length || matchMedia(CALME).matches) return;
-    gsap.set(cartes, { opacity: 0 });
-    const declencheurs = ScrollTrigger.batch(cartes, {
-        start: 'top 92%',
-        once: true,
-        onEnter: lot => gsap.fromTo(lot,
-            { y: 140, rotationX: -55, opacity: 0, transformPerspective: 1000, transformOrigin: '50% 0%' },
-            { y: 0, rotationX: 0, opacity: 1, duration: 1.3, ease: 'expo.out', stagger: 0.07, overwrite: true }),
-    });
-    declencheurs.forEach(d => enAttente.add(d));
+// Une carte entre quand son haut passe le trait (85 % de l'écran) et repart quand on remonte au-dessus.
+//   garderVisibles : après un filtre, les cartes déjà à l'écran restent affichées ;
+//   seules celles encore sous le trait attendent, cachées.
+export function reveler(cartes, { garderVisibles = false } = {}) {
+    if (!cartes.length || !enMouvement) return;
+    const ligne = innerHeight * 0.85;
+    const cachees = garderVisibles ? cartes.filter(c => c.getBoundingClientRect().top > ligne) : cartes;
+    gsap.killTweensOf(cachees);
+    gsap.set(cachees, CACHEE);
+    ScrollTrigger.batch(cartes, {
+        start: START_CARTES,
+        onEnter: lot => gsap.to(lot, { y: 0, rotationX: 0, opacity: 1, duration: 1.3, ease: 'expo.out', stagger: 0.07, overwrite: true }),
+        onLeaveBack: lot => gsap.to(lot, { ...CACHEE, duration: 0.6, ease: 'power2.in', stagger: 0.03, overwrite: true }),
+    }).forEach(d => declencheurs.add(d));
 }
 
 // Avant un filtre : toutes les cartes s'affichent tout de suite, à leur place, et c'est Flip qui les anime.
 // Sinon celles qui attendaient resteraient invisibles pendant le filtre, puis apparaîtraient après coup.
 export function revelerTout() {
-    enAttente.forEach(d => d.kill());
-    enAttente.clear();
+    declencheurs.forEach(d => d.kill());
+    declencheurs.clear();
     gsap.killTweensOf('.carte-grille');
     gsap.set('.carte-grille', { opacity: 1, y: 0, rotationX: 0 });
 }
+
+// Après un filtre : les positions ont changé (refresh), puis les cartes visibles retrouvent leurs déclencheurs.
+export function apresFiltre() {
+    rafraichir();
+    reveler(gsap.utils.toArray('.carte-grille:not([hidden])'), { garderVisibles: true });
+}
+
+// ===== DÉCLENCHEURS =====
+// Les ScrollTrigger qui ne font pas bouger d'élément : ils décident quand (la pastille de la navigation).
+// Dans animer() plus bas, chaque tween garde son scrollTrigger juste à côté de lui.
 
 // ------------------------------------------------------------
 //  La pastille de la navigation : elle glisse, avec un rebond liquide,
@@ -108,11 +130,18 @@ function indicateur() {
 //  Toutes les animations de la page, dans l'ordre où on les rencontre
 // ------------------------------------------------------------
 export function animer({ reglerSortie, descenteMax }) {
-    // La barre de progression sous la navigation : discrète, toujours là.
-    gsap.to('#progression', { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 0.3 } });
-
     media.add(MOUVEMENT, () => {
+        enMouvement = true;
         const decoupes = [];
+
+        // 0. La barre de progression sous la navigation : vide en haut, pleine en bas.
+        //    ease "none" : avec scrub, la barre suit exactement le défilement.
+        //    refreshPriority: -1 : elle est remesurée après les sections épinglées plus bas,
+        //    sinon « bottom bottom » oublie leur temps d'épinglage et la barre est pleine trop tôt.
+        gsap.fromTo('#progression', { scaleX: 0 }, {
+            scaleX: 1, ease: 'none',
+            scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: true, refreshPriority: -1 },
+        });
 
         // 1. L'entrée : la navigation tombe en place, le texte du carrousel monte.
         gsap.timeline({ defaults: { ease: 'expo.out', duration: 1.4 } })
@@ -146,13 +175,14 @@ export function animer({ reglerSortie, descenteMax }) {
             });
         });
 
-        // 4. Le manifeste reste en place et s'allume mot à mot, du flou vers le net.
+        // 4. La séquence épinglée : le manifeste reste en place (pin) et s'allume mot à mot,
+        //    du flou vers le net, au rythme du défilement (scrub: 1, une seconde de lissage).
         const mots = SplitText.create('#manifesteTexte', { type: 'words' });
         decoupes.push(mots);
         gsap.fromTo(mots.words,
             { opacity: 0.08, filter: 'blur(8px)', yPercent: 35 },
             { opacity: 1, filter: 'blur(0px)', yPercent: 0, ease: 'none', stagger: 0.12,
-              scrollTrigger: { trigger: '#manifeste', start: 'top top', end: '+=140%', scrub: 0.6, pin: true } });
+              scrollTrigger: { trigger: '#manifeste', start: 'top top', end: '+=140%', scrub: 1, pin: true } });
 
         // 5. La sélection : la section reste en place et la piste défile de côté.
         const piste = document.getElementById('piste');
@@ -229,13 +259,30 @@ export function animer({ reglerSortie, descenteMax }) {
         // 8. Le curseur (curseur.js), seulement avec une souris.
         const retirerCurseur = matchMedia('(pointer: fine)').matches ? curseur() : null;
 
+        // 9. Le menu d'ancres de la navigation glisse vers sa section (ScrollToPlugin).
+        // Pourquoi ici : la navigation est un menu d'ancres, et ScrollTo y vise la vraie place des sections épinglées (leur .pin-spacer) avec un glissé doux.
+        const liensAncres = gsap.utils.toArray('#nav a[href^="#"]');
+        const glisser = (e) => {
+            const section = document.querySelector(e.currentTarget.hash);
+            if (!section) return;
+            e.preventDefault();
+            const zone = section.parentElement.classList.contains('pin-spacer') ? section.parentElement : section;
+            gsap.to(window, { scrollTo: { y: zone, autoKill: true }, duration: 1.2, ease: 'expo.inOut', overwrite: true });
+        };
+        liensAncres.forEach(lien => lien.addEventListener('click', glisser));
+
         return () => {
+            enMouvement = false;
+            revelerTout(); // les cartes cachées qui attendaient leur déclencheur s'affichent tout de suite
             decoupes.forEach(d => d.revert());
             retirerCurseur?.();
+            liensAncres.forEach(lien => lien.removeEventListener('click', glisser));
             comptes.clear();
         };
     });
 
+    // ===== ACCESSIBILITÉ =====
+    // « Réduire les animations » : pas de pin, pas de scrub, tout est affiché d'emblée.
     media.add(CALME, () => {
         // Sans animation : la sélection se fait défiler à la main, les chiffres sont écrits tout de suite.
         document.getElementById('piste').classList.add('overflow-x-auto');

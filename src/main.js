@@ -3,13 +3,23 @@
 //    L'écran de chargement, puis les données (donnees.js), le carrousel
 //    en verre liquide (carrousel.js), le contenu des sections (sections.js),
 //    les animations (animations.js) et les jeux de typographie (typo.js).
+//
+//  Les sept zones de la séance 11 (le projet est en modules Vite, donc
+//  les zones sont réparties dans les fichiers, toujours dans cet ordre) :
+//    RÉSEAU         donnees.js     fetch() vers Are.na, erreurs, réserve
+//    DONNÉES        donnees.js     nettoyage des titres, liste sans doublon, chiffres
+//    RENDU          sections.js    les cartes en HTML, echapper(), les filtres
+//    STYLE          sections.js    rien ici : le style est dans style.css (Tailwind)
+//    MOUVEMENT      animations.js  les tweens
+//    DÉCLENCHEURS   animations.js  les ScrollTrigger
+//    ACCESSIBILITÉ  animations.js  gsap.matchMedia() et « réduire les animations »
 // ============================================================
 
 import { gsap } from 'gsap';
 import { charger, quandArrivent } from './donnees.js';
 import { demarrerCarrousel, lancerEntree, reglerSortie, descenteMax } from './carrousel.js';
 import { remplirSelection, ajouterCartes, preparerFiltres } from './sections.js';
-import { animer, reveler, revelerTout, majChiffres, rafraichir } from './animations.js';
+import { animer, reveler, revelerTout, apresFiltre, majChiffres, rafraichir } from './animations.js';
 import { creerBascule } from './bascule.js';
 import { navigationTypo, preparerTypo } from './typo.js';
 
@@ -124,7 +134,7 @@ async function demarrer() {
 
     // Les sections se remplissent derrière l'écran de chargement.
     remplirSelection();
-    preparerFiltres({ avant: revelerTout, apres: rafraichir, choix: typo.choisirChaine });
+    preparerFiltres({ avant: revelerTout, apres: apresFiltre, choix: typo.choisirChaine });
     const premieres = ajouterCartes(24);
 
     await attendre(Math.max(0, DUREE_MINIMUM - (performance.now() - debut)));
@@ -142,6 +152,8 @@ function lancer(premieres) {
     animer({ reglerSortie, descenteMax });
     typo.brancher();
     reveler(premieres);
+    // Les cartes d'Are.na viennent d'arriver et la page a changé de hauteur : on remesure tous les déclencheurs.
+    rafraichir();
 }
 
 function sortir(premieres) {

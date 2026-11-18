@@ -72,7 +72,7 @@ function preparer(liste) {
         .map(({ bloc, chaine }) => ({
             id: bloc.id,
             nom: `${chaine.nom} n° ${bloc.connection.position}`, // les titres d'Are.na sont des noms de fichiers
-            image: bloc.image.small.src,
+            image: bloc.image.medium.src,
             espece: bloc.image.content_type.replace("image/", ""),
             origine: bloc.user.name.trim(),
             position: Number(bloc.connection.position),

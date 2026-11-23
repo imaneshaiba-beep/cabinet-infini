@@ -1,6 +1,6 @@
 # Cabinet infini
 
-Un cabinet d'affiches sans fond : des milliers d'affiches choisies par des graphistes sur [Are.na](https://www.are.na), vues à travers une lentille de verre liquide. Projet de portfolio de Shaiba Imane.
+Un cabinet d'affiches sans fond : des milliers d'affiches choisies par des graphistes sur [Are.na](https://www.are.na), vues à travers une lentille de verre liquide. Projet de portfolio.
 
 **En ligne :** https://shaibanova.techniques-graphiques.be/cabinet-infini/
 
